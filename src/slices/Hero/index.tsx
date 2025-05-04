@@ -1,24 +1,90 @@
-import { FC } from "react";
+"use client";
+import React from "react";
+
 import { asText, Content } from "@prismicio/client";
 import { PrismicRichText, SliceComponentProps } from "@prismicio/react";
 import { PrismicNextImage } from "@prismicio/next";
-import Button from "../../app/components/Button"
+
+
+import gsap from "gsap";
+import { useGSAP } from "@gsap/react";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+
+
+import Button from "../../app/components/Button";
 import { TextSplitter } from "@/app/components/TextSpliter";
+
+
+gsap.registerPlugin(useGSAP, ScrollTrigger)
+
+type HereProps = {
+  slice: any; // Replace 'any' with your correct type
+};
 
 /**
  * Props for `Here`.
  */
-export type HereProps = SliceComponentProps<Content.HereSlice>;
+
+
 
 /**
  * Component for "Here" Slices.
  */
-const Hero: FC<HereProps> = ({ slice }) => {
+const Hero = ({ slice }: HereProps): JSX.Element => {
+  useGSAP(() => {
+    const introTl = gsap.timeline()
+    introTl.set(".hero", { opacity: 1 }).from(".hero-header-word", {
+      scale: 3,
+      opacity: 0,
+      ease: "power4.in",
+      delay: 0.3,
+      stagger: 1
+
+    }).from(".hero-subheading", {
+      opacity: 0,
+      y: 0
+    },
+      "+=.8",
+    ).from(".hero-body", {
+      opacity: 0,
+      y: 10
+
+    }).from(".hero-button", {
+      opacity: 0,
+      y: 0,
+      duration: 0.6
+    })
+
+    const scrollT1 = gsap.timeline({
+      scrollTrigger: {
+        trigger: ".hero",
+        start: "top top",
+        end: "bottom bottom",
+        scrub: 1.5,
+        markers: true
+      }
+    })
+    scrollT1.fromTo(
+      "body",
+      { backgroundColor: "#FDE047" },  // FROM
+      {
+        backgroundColor: "#D9F99D",
+        overwrite: "auto"
+      },
+      1
+
+    )
+
+  })
+
+
+
   return (
     <section
       data-slice-type={slice.slice_type}
       data-slice-variation={slice.variation}
-      className="hero"
+      className="hero opacity-0"
     >
       <div className="grid">
         <div className="grid h-screen place-items-center ">
